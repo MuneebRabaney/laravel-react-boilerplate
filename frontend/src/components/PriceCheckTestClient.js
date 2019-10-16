@@ -169,7 +169,6 @@ class PriceCheckTestClient extends Component {
    *  @return Function
    * */
   handleUpdateInput = ({ values }) => {
-    console.log({ values });
     const state = Object.assign({}, this.state);
     state.input = values;
     this.setState(state, () => this.handleApiSubmission());
