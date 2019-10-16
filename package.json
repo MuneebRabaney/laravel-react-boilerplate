@@ -1,0 +1,22 @@
+{
+  "name": "laravel-react-boilerplate",
+  "version": "1.0.0",
+  "description": "A decoupled react laraval setup",
+  "main": "index.js",
+  "scripts": {
+    "start:client": "cd ./client.app.local && npm run start",
+    "client:install": "cd ./client.app.local && npm install",
+    "server:install": "cd ./client.app.local && composer update",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuneebRabaney/laravel-react-boilerplate.git"
+  },
+  "author": "Muneeb Rabaney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MuneebRabaney/laravel-react-boilerplate/issues"
+  },
+  "homepage": "https://github.com/MuneebRabaney/laravel-react-boilerplate#readme"
+}

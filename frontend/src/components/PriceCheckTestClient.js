@@ -15,9 +15,7 @@ class PriceCheckTestClient extends Component {
     input: [],
   };
 
-  componentDidMount() {
-    // this.handleGenerateRandomInput();
-  }
+  componentDidMount() {}
 
   /**
    *  The methods below is the simulation of getting data to impelment
@@ -120,12 +118,17 @@ class PriceCheckTestClient extends Component {
     this.setState(state, () => this.handleApiSubmission());
   };
 
+  handleAutoSelectBlocks = () => {
+    this.handleGenerateRandomInput();
+  };
+
   render() {
     const { data } = this.props;
     return (
       <Fragment>
         <Grid
           max={data.max}
+          onGenerateBlocks={this.handleAutoSelectBlocks}
           onBlocksSelectionCompleted={this.handleUpdateInput}
         />
         <Content>

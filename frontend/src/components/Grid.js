@@ -80,10 +80,18 @@ class Grid extends Component {
     const { blocks } = this.state;
     const maxLimitSelection = max - 3;
     if (blocks.length > 0 || blocks.length <= maxLimitSelection) {
-      if (onBlocksSelectionCompleted)
+      if (onBlocksSelectionCompleted) {
         return onBlocksSelectionCompleted({
           values: blocks,
         });
+      }
+    }
+  };
+
+  handleGenerateBlockSelectionCompleted = () => {
+    const { onGenerateBlocks } = this.props;
+    if (onGenerateBlocks) {
+      return onGenerateBlocks();
     }
   };
 
@@ -97,8 +105,8 @@ class Grid extends Component {
           selected={this.handleBlockSelected({
             value: index,
           })}
-          key={index}
           id={index}
+          key={index}
           onClick={this.handleOnClick}>
           <span>{index}</span>
         </Block>
@@ -109,11 +117,17 @@ class Grid extends Component {
   };
 
   render() {
+    console.log(this.state.blocks);
     return (
       <Fragment>
         <Container>{this.renderBlocks()}</Container>
         <Button onClick={this.handleBlockSelectionCompleted} type='button'>
           Submit
+        </Button>
+        <Button
+          type='button'
+          onClick={this.handleGenerateBlockSelectionCompleted}>
+          Auto Generate
         </Button>
       </Fragment>
     );
