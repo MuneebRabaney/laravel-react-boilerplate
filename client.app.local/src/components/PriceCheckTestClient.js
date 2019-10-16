@@ -1,18 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import Grid from './Grid';
+import styled from 'styled-components';
 
-export default class PriceCheckTestClient extends Component {
+const Content = styled.p`
+  padding: 10px 20px;
+  strong {
+    font-weight: 600;
+  }
+`;
+
+class PriceCheckTestClient extends Component {
   state = {
     output: null,
     input: [],
   };
 
   componentDidMount() {
-    this.handleGenerateRandomInput();
+    // this.handleGenerateRandomInput();
   }
 
   handleApiSubmission = async () => {
-    // in the api controller we will
-    // do this
     const { input } = this.state;
     await fetch('http://price-check-test-server.local/api/process-data', {
       headers: {
@@ -21,8 +28,9 @@ export default class PriceCheckTestClient extends Component {
         Origin: 'http://localhost:3000',
       },
       method: 'POST',
+      mode: 'cors',
       body: JSON.stringify({
-        input,
+        values: input,
         max: 20,
       }),
     })
@@ -97,7 +105,26 @@ export default class PriceCheckTestClient extends Component {
     }
   };
 
+  handleUpdateInput = ({ values }) => {
+    const state = Object.assign({}, this.state);
+    state.input = values;
+    this.setState(state, () => this.handleApiSubmission());
+  };
+
   render() {
-    return <div>{this.state.output}</div>;
+    const { data } = this.props;
+    return (
+      <Fragment>
+        <Grid
+          max={data.max}
+          onBlocksSelectionCompleted={this.handleUpdateInput}
+        />
+        <Content>
+          Server Response Output: <strong>{this.state.output}</strong>
+        </Content>
+      </Fragment>
+    );
   }
 }
+
+export default PriceCheckTestClient;

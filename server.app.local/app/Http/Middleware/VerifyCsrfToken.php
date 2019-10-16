@@ -20,5 +20,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'http://localhost:3001',
+        'api/process-data'
     ];
 }
