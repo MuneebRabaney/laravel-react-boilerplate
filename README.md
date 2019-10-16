@@ -1,9 +1,9 @@
 ## This is a simple test that uses Laravel 6 and react 16
 
-The only thing that needs to be done is to set up the server and have it point to the api
+The only thing that needs to be done is to set up the server and have it point to the API
 
-All the API Backend code can be found inside server.app.local
-All the Client Frontend code can be found inside cleint.app.local
+All the API Backend code can be found inside backend
+All the Client Frontend code can be found inside frontend
 
 ### Installing the Frontend
 
