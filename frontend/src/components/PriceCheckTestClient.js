@@ -13,13 +13,13 @@ class PriceCheckTestClient extends Component {
   state = {
     output: null,
     input: [],
+    loading: false,
   };
 
-  componentDidMount() {}
-
   /**
-   *  The methods below is the simulation of getting data to impelment
-   *
+   *  @Method {handleGenerateRandomInput}
+   *  @description
+   *  @return Function
    * */
   handleGenerateRandomInput = () => {
     let { min, max } = this.props.data;
@@ -36,6 +36,12 @@ class PriceCheckTestClient extends Component {
     console.log(errors);
   };
 
+  /**
+   *  @Method {handleInputErrors}
+   *  @description
+   *  @param {Object<String>}
+   *  @return Object
+   * */
   handleInputErrors = ({ values }) => {
     const errors = {};
     values.map(value => {
@@ -52,6 +58,12 @@ class PriceCheckTestClient extends Component {
     return errors;
   };
 
+  /**
+   *  @Method {handleNumberRemoval}
+   *  @description
+   *  @param {Object<String, Array>}
+   *  @return null
+   * */
   handleNumberRemoval = ({ result }) => {
     if (result.length) {
       let exclude = [11, 9, 8, 7, 5, 14, 15, 16, 17, 19];
@@ -65,6 +77,12 @@ class PriceCheckTestClient extends Component {
     return null;
   };
 
+  /**
+   *  @Method {handleShuffleArray}
+   *  @description
+   *  @param {Object<String, Array>}
+   *  @return Function
+   * */
   handleShuffleArray = ({ list }) => {
     for (let index = list.length - 1; index > 0; index--) {
       const swapValue = Math.floor(Math.random() * (index + 1));
@@ -75,17 +93,24 @@ class PriceCheckTestClient extends Component {
     });
   };
 
+  /**
+   *  @Method {handleSortArrayByAscendingOrder}
+   *  @description Sorts a list by order ascending
+   *  @param {Object<String, Array>}
+   *  @return Function
+   * */
   handleSortArrayByAscendingOrder = ({ list = [] }) => {
     if (list) return list.sort((a, b) => a - b);
   };
 
   /**
-   *  The methods below is the implementation to whats needed
-   *
+   *  @Method {handleApiSubmission}
+   *  @description Submits data to the API endpoint
+   *  @return void
    * */
-
   handleApiSubmission = async () => {
     const { input } = this.state;
+    this.handleLoading({ busy: true });
     await fetch('http://price-check-test-server.local/api/process-data', {
       headers: {
         'Content-Type': 'application/json',
@@ -100,10 +125,35 @@ class PriceCheckTestClient extends Component {
       }),
     })
       .then(response => response.json())
-      .then(result => this.printResultToScreen({ result }))
+      .then(result => {
+        this.handleLoading({ busy: false });
+        return this.printResultToScreen({ result });
+      })
       .catch(error => console.error('Error:', error));
   };
 
+  /**
+   *  @Method {handleLoading}
+   *  @description Indicates when the component is in a data pending state
+   *  @param {Object<String, Array> | Bool}
+   *  @return Function
+   *  @throw Error
+   * */
+  handleLoading = ({ busy }) => {
+    if (typeof busy !== 'undefined') {
+      const state = Object.assign({}, this.state);
+      state.loading = busy;
+      return this.setState(state);
+    }
+    return Error('Missing method argument');
+  };
+
+  /**
+   *  @Method {printResultToScreen}
+   *  @description Prints an output to the screen
+   *  @param {Object<String, Array> | Bool}
+   *  @return Function
+   * */
   printResultToScreen = ({ result } = false) => {
     if (result) {
       const state = Object.assign({}, this.state);
@@ -112,28 +162,33 @@ class PriceCheckTestClient extends Component {
     }
   };
 
+  /**
+   *  @Method {handleUpdateInput}
+   *  @description
+   *  @param {Object<String, Array>}
+   *  @return Function
+   * */
   handleUpdateInput = ({ values }) => {
+    console.log({ values });
     const state = Object.assign({}, this.state);
     state.input = values;
     this.setState(state, () => this.handleApiSubmission());
   };
 
-  handleAutoSelectBlocks = () => {
-    this.handleGenerateRandomInput();
-  };
-
   render() {
     const { data } = this.props;
+    const { output, loading } = this.state;
     return (
       <Fragment>
+        <Content>{loading && 'Loading...'}</Content>
+        <Content>
+          Server Response Output: <strong>{output}</strong>
+        </Content>
         <Grid
           max={data.max}
-          onGenerateBlocks={this.handleAutoSelectBlocks}
+          onGenerateBlocks={this.handleGenerateRandomInput}
           onBlocksSelectionCompleted={this.handleUpdateInput}
         />
-        <Content>
-          Server Response Output: <strong>{this.state.output}</strong>
-        </Content>
       </Fragment>
     );
   }

@@ -20,12 +20,12 @@ class DataConsumerController extends Controller
         return json_encode('Mmmm, so you\'re trying to be a wise guy 🤨. You\'ve selected all the blocks. Try deselect one to have the data returned formatted.');
       }
 
-      $values = $this->findMissingValues([
+      $values = $this->find_missing_values([
         'inputs' => $request->input('values'),
         'max' => $request->input('max')
       ]);
 
-      $result = $this->formatSequence([
+      $result = $this->format_sequence([
         'values' => $values
       ]);
       
@@ -40,7 +40,8 @@ class DataConsumerController extends Controller
      * @param Array
      * @return Array
      */
-    private function formatSequence(Array $sequence) {
+    private function format_sequence(Array $sequence) 
+    {
       if (count($sequence['values'])) {
         $result = '';
         $skip = false;
@@ -75,8 +76,8 @@ class DataConsumerController extends Controller
      * @param Array
      * @return Array
      */
-    
-    private function findMissingValues(Array $values) {
+    private function find_missing_values(Array $values) 
+    {
       if (count($values)) {
         $missing_values = [];
         $list = $values['inputs'];

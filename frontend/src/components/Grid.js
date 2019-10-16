@@ -1,53 +1,19 @@
 import React, { Component, Fragment } from 'react';
-import styled, { css } from 'styled-components';
-
-const Container = styled.div`
-  display: grid;
-  background: lightblue;
-  grid-template-columns: auto auto auto auto;
-  grid-template-rows: repeat(5, 120px);
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-`;
-
-const Block = styled.div`
-  background: lightgreen;
-  position: relative;
-  color: #000;
-  ${({ selected }) =>
-    selected &&
-    css`
-      background: tomato;
-    `}
-  > span {
-    display: inline-block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-`;
-
-const Button = styled.button`
-  margin: 20px auto;
-  width: 200px;
-  height: 35px;
-  display: block;
-  ${({ activated }) =>
-    activated &&
-    css`
-      background: green;
-    `}
-`;
+import { Button, Block } from './ui';
+import { Container } from './layout';
 
 class Grid extends Component {
   state = {
     blocks: [],
   };
 
+  /**
+   *  @Method {handleOnClick}
+   *  @description Adds or removes blocks based on position in state
+   *  @return Function
+   * */
   handleOnClick = event => {
     const id = parseInt(event.currentTarget.id);
-
     if (!this.state.blocks.includes(id)) {
       // Adds a block to the state
       return this.handleAddBlockToState({ value: id });
@@ -58,57 +24,80 @@ class Grid extends Component {
     });
   };
 
+  /**
+   *  @Method {handleAddBlockToState}
+   *  @description Adds a block to the state
+   *  @return Function
+   * */
   handleAddBlockToState = ({ value }) => {
     const state = Object.assign({}, this.state);
     state.blocks = [...this.state.blocks, value];
     this.setState(state);
   };
 
+  /**
+   *  @Method {handleRemoveBlockFromState}
+   *  @description Removes a block from the state
+   *  @return Function
+   * */
   handleRemoveBlockFromState = ({ value }) => {
     const state = Object.assign({}, this.state);
     state.blocks = this.state.blocks.filter(block => block !== value);
     this.setState(state);
   };
 
+  /**
+   *  @Method {handleBlockSelected}
+   *  @description Indicates when a block is selected
+   *  @return Function
+   * */
   handleBlockSelected = ({ value }) => {
     const { blocks } = this.state;
     return blocks.find(block => block === value);
   };
 
+  /**
+   *  @Method {handleBlockSelectionCompleted}
+   *  @description When all the blocks are seleted
+   *  @return Function
+   * */
   handleBlockSelectionCompleted = () => {
-    const { onBlocksSelectionCompleted, max } = this.props;
     const { blocks } = this.state;
-    const maxLimitSelection = max - 3;
-    if (blocks.length > 0 || blocks.length <= maxLimitSelection) {
-      if (onBlocksSelectionCompleted) {
-        return onBlocksSelectionCompleted({
-          values: blocks,
-        });
-      }
+    const { onBlocksSelectionCompleted } = this.props;
+    if (blocks.length && onBlocksSelectionCompleted) {
+      return onBlocksSelectionCompleted({
+        values: blocks,
+      });
     }
   };
 
+  /**
+   *  @Method {handleGenerateBlockSelectionCompleted}
+   *  @description Auto generates numbers for a selection
+   *  @return Function
+   * */
   handleGenerateBlockSelectionCompleted = () => {
     const { onGenerateBlocks } = this.props;
-    if (onGenerateBlocks) {
-      return onGenerateBlocks();
-    }
+    if (onGenerateBlocks) return onGenerateBlocks();
   };
 
+  /**
+   *  @Method {renderBlocks}
+   *  @description Renders a Block Compoent to the screen
+   *  @return Array
+   * */
   renderBlocks = () => {
+    const results = [];
     let { max } = this.props || 20;
     if (max > 20) max = 20;
-    const results = [];
-    for (let index = 1; index <= max; index++) {
+    for (let value = 1; value <= max; value++) {
       const item = (
         <Block
-          selected={this.handleBlockSelected({
-            value: index,
-          })}
-          id={index}
-          key={index}
-          onClick={this.handleOnClick}>
-          <span>{index}</span>
+          id={value}
+          key={value}
+          onClick={this.handleOnClick}
+          selected={this.handleBlockSelected({ value })}>
+          <span>{value}</span>
         </Block>
       );
       results.push(item);
@@ -117,18 +106,19 @@ class Grid extends Component {
   };
 
   render() {
-    console.log(this.state.blocks);
     return (
       <Fragment>
-        <Container>{this.renderBlocks()}</Container>
-        <Button onClick={this.handleBlockSelectionCompleted} type='button'>
-          Submit
-        </Button>
-        <Button
-          type='button'
-          onClick={this.handleGenerateBlockSelectionCompleted}>
-          Auto Generate
-        </Button>
+        <Container grid>{this.renderBlocks()}</Container>
+        <Container centerInnerElements>
+          <Button onClick={this.handleBlockSelectionCompleted} type='button'>
+            Submit
+          </Button>
+          <Button
+            type='button'
+            onClick={this.handleGenerateBlockSelectionCompleted}>
+            Auto Generate
+          </Button>
+        </Container>
       </Fragment>
     );
   }
