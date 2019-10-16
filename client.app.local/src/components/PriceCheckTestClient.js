@@ -19,38 +19,23 @@ class PriceCheckTestClient extends Component {
     // this.handleGenerateRandomInput();
   }
 
-  handleApiSubmission = async () => {
-    const { input } = this.state;
-    await fetch('http://price-check-test-server.local/api/process-data', {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Origin: 'http://localhost:3000',
-      },
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        values: input,
-        max: 20,
-      }),
-    })
-      .then(response => response.json())
-      .then(result => this.printResultToScreen({ result }))
-      .catch(error => console.error('Error:', error));
-  };
-
-  handleSortArrayByAscendingOrder = ({ list = [] }) => {
-    if (list) return list.sort((a, b) => a - b);
-  };
-
-  handleShuffleArray = ({ list }) => {
-    for (let index = list.length - 1; index > 0; index--) {
-      const swapValue = Math.floor(Math.random() * (index + 1));
-      [list[index], list[swapValue]] = [list[swapValue], list[index]];
-    }
-    return this.handleSortArrayByAscendingOrder({
-      list,
+  /**
+   *  The methods below is the simulation of getting data to impelment
+   *
+   * */
+  handleGenerateRandomInput = () => {
+    let { min, max } = this.props.data;
+    const errors = this.handleInputErrors({
+      values: [min, max],
     });
+    if (!errors.count) {
+      const result = [];
+      min = parseInt(min);
+      max = parseInt(max);
+      for (let index = min; index <= max; index++) result.push(index);
+      return this.handleNumberRemoval({ result });
+    }
+    console.log(errors);
   };
 
   handleInputErrors = ({ values }) => {
@@ -82,19 +67,43 @@ class PriceCheckTestClient extends Component {
     return null;
   };
 
-  handleGenerateRandomInput = () => {
-    let { min, max } = this.props.data;
-    const errors = this.handleInputErrors({
-      values: [min, max],
-    });
-    if (!errors.count) {
-      const result = [];
-      min = parseInt(min);
-      max = parseInt(max);
-      for (let index = min; index <= max; index++) result.push(index);
-      return this.handleNumberRemoval({ result });
+  handleShuffleArray = ({ list }) => {
+    for (let index = list.length - 1; index > 0; index--) {
+      const swapValue = Math.floor(Math.random() * (index + 1));
+      [list[index], list[swapValue]] = [list[swapValue], list[index]];
     }
-    console.log(errors);
+    return this.handleSortArrayByAscendingOrder({
+      list,
+    });
+  };
+
+  handleSortArrayByAscendingOrder = ({ list = [] }) => {
+    if (list) return list.sort((a, b) => a - b);
+  };
+
+  /**
+   *  The methods below is the implementation to whats needed
+   *
+   * */
+
+  handleApiSubmission = async () => {
+    const { input } = this.state;
+    await fetch('http://price-check-test-server.local/api/process-data', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Origin: 'http://localhost:3000',
+      },
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        values: input,
+        max: 20,
+      }),
+    })
+      .then(response => response.json())
+      .then(result => this.printResultToScreen({ result }))
+      .catch(error => console.error('Error:', error));
   };
 
   printResultToScreen = ({ result } = false) => {
