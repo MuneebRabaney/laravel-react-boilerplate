@@ -1,4 +1,4 @@
-## This is a simple test that uses Laravel 6 and react 16
+## This is a simple test that uses Laravel 6 and React 16
 
 The only thing that needs to be done is to set up the server and have it point to the API
 
