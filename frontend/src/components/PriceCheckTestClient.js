@@ -1,9 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import Grid from './Grid';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Content = styled.p`
+  min-height: 20px;
   padding: 10px 20px;
+  ${({ left }) =>
+    left &&
+    css`
+      float: left;
+    `}
+  ${({ right }) =>
+    right &&
+    css`
+      float: right;
+    `}
   strong {
     font-weight: 600;
   }
@@ -18,7 +29,7 @@ class PriceCheckTestClient extends Component {
 
   /**
    *  @Method {handleGenerateRandomInput}
-   *  @description
+   *  @description Generates Random number list
    *  @return Function
    * */
   handleGenerateRandomInput = () => {
@@ -38,7 +49,7 @@ class PriceCheckTestClient extends Component {
 
   /**
    *  @Method {handleInputErrors}
-   *  @description
+   *  @description handles errros from missing props
    *  @param {Object<String>}
    *  @return Object
    * */
@@ -60,7 +71,7 @@ class PriceCheckTestClient extends Component {
 
   /**
    *  @Method {handleNumberRemoval}
-   *  @description
+   *  @description removes numbers from the list
    *  @param {Object<String, Array>}
    *  @return null
    * */
@@ -72,14 +83,14 @@ class PriceCheckTestClient extends Component {
       state.input = this.handleShuffleArray({
         list: result,
       });
-      this.setState(state, () => this.handleApiSubmission());
+      this.setState(state, this.handleApiSubmission);
     }
     return null;
   };
 
   /**
    *  @Method {handleShuffleArray}
-   *  @description
+   *  @description takes an array list and shuffles the values
    *  @param {Object<String, Array>}
    *  @return Function
    * */
@@ -106,12 +117,13 @@ class PriceCheckTestClient extends Component {
   /**
    *  @Method {handleApiSubmission}
    *  @description Submits data to the API endpoint
-   *  @return void
+   *  @return String
    * */
   handleApiSubmission = async () => {
-    const { input } = this.state;
     this.handleLoading({ busy: true });
-    await fetch('http://price-check-test-server.local/api/process-data', {
+    const { input } = this.state;
+    const url = 'http://price-check-test-server.local/api/process-data';
+    const args = {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -123,13 +135,16 @@ class PriceCheckTestClient extends Component {
         values: input,
         max: 20,
       }),
-    })
+    };
+    const request = await fetch(url, args)
       .then(response => response.json())
       .then(result => {
         this.handleLoading({ busy: false });
-        return this.printResultToScreen({ result });
+        this.printResultToScreen({ result });
       })
       .catch(error => console.error('Error:', error));
+
+    return request;
   };
 
   /**
@@ -164,14 +179,14 @@ class PriceCheckTestClient extends Component {
 
   /**
    *  @Method {handleUpdateInput}
-   *  @description
+   *  @description Updates the input values in state then submits them to the API
    *  @param {Object<String, Array>}
    *  @return Function
    * */
   handleUpdateInput = ({ values }) => {
     const state = Object.assign({}, this.state);
     state.input = values;
-    this.setState(state, () => this.handleApiSubmission());
+    this.setState(state, this.handleApiSubmission);
   };
 
   render() {
@@ -179,8 +194,8 @@ class PriceCheckTestClient extends Component {
     const { output, loading } = this.state;
     return (
       <Fragment>
-        <Content>{loading && 'Loading...'}</Content>
-        <Content>
+        <Content right>{loading && 'Loading...'}</Content>
+        <Content left>
           Server Response Output: <strong>{output}</strong>
         </Content>
         <Grid

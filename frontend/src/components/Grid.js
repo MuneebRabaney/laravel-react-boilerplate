@@ -27,7 +27,7 @@ class Grid extends Component {
   /**
    *  @Method {handleAddBlockToState}
    *  @description Adds a block to the state
-   *  @return Function
+   *  @return void
    * */
   handleAddBlockToState = ({ value }) => {
     const state = Object.assign({}, this.state);
@@ -38,7 +38,7 @@ class Grid extends Component {
   /**
    *  @Method {handleRemoveBlockFromState}
    *  @description Removes a block from the state
-   *  @return Function
+   *  @return void
    * */
   handleRemoveBlockFromState = ({ value }) => {
     const state = Object.assign({}, this.state);
@@ -49,7 +49,7 @@ class Grid extends Component {
   /**
    *  @Method {handleBlockSelected}
    *  @description Indicates when a block is selected
-   *  @return Function
+   *  @return Boolean
    * */
   handleBlockSelected = ({ value }) => {
     const { blocks } = this.state;
@@ -58,13 +58,13 @@ class Grid extends Component {
 
   /**
    *  @Method {handleBlockSelectionCompleted}
-   *  @description When all the blocks are seleted
+   *  @description Get all the selected blocks
    *  @return Function
    * */
   handleBlockSelectionCompleted = () => {
     const { blocks } = this.state;
     const { onBlocksSelectionCompleted } = this.props;
-    if (blocks.length && onBlocksSelectionCompleted) {
+    if (onBlocksSelectionCompleted) {
       return onBlocksSelectionCompleted({
         values: blocks,
       });
