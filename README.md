@@ -11,7 +11,7 @@ Use `npm run client:install` to install the dependencies needed for the React fr
 
 ### Compiling the Frontend in watch mode
 
-use `npm run start:client` from this project root directory to run the compiler in watch mode
+use `npm run client:start` from this project root directory to run the compiler in watch mode
 
 ### Installing the Backend
 
