@@ -18,7 +18,6 @@ class DataConsumerController extends Controller
      */
     public function process_data(Request $request)
     {
-
       // Declare a default result response 
       (String) $result = 'Mmmm, so you\'re trying to be a wise guy 🤨. You\'ve selected all the blocks! Try deselect one to have the data returned formatted.';
       
