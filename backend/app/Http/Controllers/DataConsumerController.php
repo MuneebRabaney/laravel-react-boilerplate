@@ -31,7 +31,7 @@ class DataConsumerController extends Controller
         // Format the found missing values set 
         // the result to respected formatted
         (String) $result = $this->format_sequence([
-          'values' => $values
+          'values' => $values,
         ]);
       }
 
@@ -72,6 +72,7 @@ class DataConsumerController extends Controller
         }
         return $result;
       }
+      return false;
     }
     
     /**

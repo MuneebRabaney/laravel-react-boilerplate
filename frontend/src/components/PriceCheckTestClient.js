@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Grid from './Grid';
 import styled, { css } from 'styled-components';
+import { Api } from '../helpers';
 
 const Content = styled.p`
   min-height: 20px;
@@ -119,32 +120,18 @@ class PriceCheckTestClient extends Component {
    *  @description Submits data to the API endpoint
    *  @return String
    * */
-  handleApiSubmission = async () => {
+  handleApiSubmission = () => {
     this.handleLoading({ busy: true });
     const { input } = this.state;
-    const url = 'http://price-check-test-server.local/api/process-data';
-    const args = {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Origin: 'http://localhost:3000',
-      },
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({
-        values: input,
-        max: 20,
-      }),
-    };
-    const request = await fetch(url, args)
-      .then(response => response.json())
-      .then(result => {
-        this.handleLoading({ busy: false });
-        this.printResultToScreen({ result });
-      })
-      .catch(error => console.error('Error:', error));
-
-    return request;
+    const data = { values: input, max: 20 };
+    const endpoint = 'process-data';
+    return Api.post({
+      data,
+      endpoint,
+    }).then(result => {
+      this.handleLoading({ busy: false });
+      return result && this.printResultToScreen({ result });
+    });
   };
 
   /**
